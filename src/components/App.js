@@ -4,6 +4,7 @@ import NotFound from "./NotFound";
 import LandingPage from "./LandingPage";
 import InputOptions from "./InputOptions";
 import ChartPage from "./ChartPage";
+import Slider from "./Slider/Slider";
 
 class App extends Component {
 
@@ -44,8 +45,7 @@ class App extends Component {
                         <InputOptions {...props} storeOptions={this.inputPageOptions} goToDreamCalc={this.loadDreamCalc} buttonSelection={this.state.landingPageOption} selectChoice={this.inputPageOptions}/>)}/>
 
                     <Match exactly pattern="/dream" exact render={(props) => (
-                        <ChartPage {...props} />)}/>
-
+                        <Slider {...props} />)}/>
 
                     <Miss component={NotFound}/>
                 </div>

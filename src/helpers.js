@@ -7,11 +7,12 @@ export function getTextArray() {
 }
 
 export function getPoints() {
-    var result = [];
-    result.push({x: 1, y: 1});
-    result.push({x: 2, y: 2});
-    result.push({x: 3, y: 1});
-    return result;
+    var result = {
+        labels: [0,1,2,3,4,5,6,7,8,9,10],
+        datasets: [{
+            data:
+        }]
+    }
 }
 
 //How soon I would reach my goal

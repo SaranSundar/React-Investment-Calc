@@ -39,7 +39,7 @@ class ChartPage extends Component {
             const data = (canvas) => {
                 return {
                     datasets: [{
-                        label: 'Value: ',
+                        label: 'Money Saved',
                         data: getPoints(),
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
