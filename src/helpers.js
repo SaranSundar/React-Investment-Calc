@@ -1,4 +1,3 @@
-
 export function getTextArray() {
     var text1 = "How much do I need to put aside to reach my goal?";
     var text2 = "How soon will I reach my goal?";
@@ -7,11 +6,141 @@ export function getTextArray() {
 }
 
 export function getPoints() {
-    var result = {
-        labels: [0,1,2,3,4,5,6,7,8,9,10],
-        datasets: [{
-            data:
-        }]
+    var result = [];
+    result.push({x: 1, y: 1});
+    result.push({x: 2, y: 15});
+    result.push({x: 3, y: 1});
+    result.push({x: 4, y: 0});
+    return result;
+}
+
+export function option1Formula(initInvestments, goal, monthInvestment, years, option) {
+    var balance = [];
+    balance.push(initInvestments);
+
+    var multiplier = 0;
+    if (option === "aggressive")
+        multiplier = .09 / 12;
+    else if (option === "moderate")
+        multiplier = .07 / 12;
+    else
+        multiplier = .04 / 12;
+
+    var growth = [];
+    growth.push(initInvestments * multiplier);
+    var addition = [];
+    addition.push(monthInvestment);
+
+    for (let i = 1; i < years * 12; i++) {
+        balance.push(balance[i - 1] + growth[i - 1] + addition[i - 1]);
+        growth.push(balance[i - 1] * multiplier);
+        addition.push(addition[i - 1] * 1.0025);
+    }
+
+    return balance;
+}
+
+export function option1FinalFormula(initInvestments, option, goal, years) {
+    var result = [];
+    var monthInvestment = 0;
+    do {
+        result = option1Formula(initInvestments, goal, monthInvestment, years, option);
+        monthInvestment = monthInvestment + 0.1;
+    }
+    while (result[result.length - 1] < goal);
+
+    return result;
+}
+
+export function option2Formula(initInvestments, option, goal, monthInvestment) {
+    var balance = [];
+    balance.push(initInvestments);
+
+    var multiplier = 0;
+    if (option === "aggressive")
+        multiplier = .09 / 12;
+    else if (option === "moderate")
+        multiplier = .07 / 12;
+    else
+        multiplier = .04 / 12;
+
+    var growth = [];
+    growth.push(initInvestments * multiplier);
+    var addition = [];
+    addition.push(monthInvestment);
+
+    var counter = 1;
+    while (balance[balance.length - 1] < goal) {
+        console.log("ITEM COUNTER: " + counter);
+        balance.push(balance[counter - 1] + growth[counter - 1] + addition[counter - 1]);
+        growth.push(balance[counter - 1] * multiplier);
+        addition.push(addition[counter - 1] * 1.0025);
+        counter++;
+    }
+
+    return balance;
+}
+
+export function option3Formula(initInvestments, years, monthInvestment, option, expense) {
+    var balance = [];
+    balance.push(initInvestments);
+
+    var multiplier = 0;
+    if (option === "aggressive")
+        multiplier = .09 / 12;
+    else if (option === "moderate")
+        multiplier = .07 / 12;
+    else
+        multiplier = .04 / 12;
+
+    var growth = [];
+    growth.push(initInvestments * multiplier);
+    var addition = [];
+    addition.push(monthInvestment);
+    var expenses = [];
+    expenses.push(expense);
+
+
+    var counter = 1;
+    while (balance[balance.length - 1] > 0) {
+        if (counter <= years * 12) {
+            balance.push(balance[counter - 1] + growth[counter - 1] + addition[counter - 1]);
+        }
+        else{
+            balance.push(balance[counter - 1] + growth[counter - 1] - expenses[counter - 1]);
+        }
+        growth.push(balance[counter - 1] * multiplier);
+        addition.push(addition[counter - 1] * 1.0025);
+        expenses.push(expenses[counter - 1] * 1.0025);
+        counter++;
+    }
+
+    balance[balance.length-1] = 0;
+    return balance;
+}
+
+export function option3FinalFormula(initInvestments, option, expense, years) {
+    var result = [];
+    var monthInvestment = 0;
+    do {
+        result = option3Formula(initInvestments, years, monthInvestment, option, expense);
+        monthInvestment = monthInvestment + 0.1;
+    }
+    while (result.length < 600);
+
+    return result;
+}
+
+export function checkOrientation() {
+    if (window.innerHeight > window.innerWidth) {
+        console.log("This website is optimized for landscape view. Please rotate your device and try again.");
+        document.body.style.setProperty("-webkit-transform", "rotate(90deg)", null);
+        document.body.style.width = "100vh";
+        document.body.style.height = "100vw";
+        document.getElementById("main").style.width = "100vh";
+        document.getElementById("main").style.height = "100vw";
+        document.getElementById("wrapChart").style.width = "100vh";
+        document.getElementById("wrapChart").style.height = "100vw";
     }
 }
 

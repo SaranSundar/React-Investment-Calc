@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Dot from './Dot';
 
 /*
@@ -7,20 +7,20 @@ import Dot from './Dot';
   then rendered to the screen. It will produce the same number of dots that
   there are images in the user defined images array in Slider 
 */
-const Dots = ({ numberOfDots, isCurrent, dotClick}) => {
+const Dots = ({numberOfDots, isCurrent, dotClick}) => {
 
-  let dotsCount = [];
-  // Creates an array of Dot components, and assigns one of them the isCurrent CSS class, which makes it a different color
-  for(let i = 0; i < numberOfDots; i++) {
-    let name = (isCurrent === i) ? "isCurrent dot" : "dot";
-    dotsCount.push(<Dot key={i} name={name} dotClick={dotClick} dotIndex={i} />)
-  }
+    let dotsCount = [];
+    // Creates an array of Dot components, and assigns one of them the isCurrent CSS class, which makes it a different color
+    for (let i = 0; i < numberOfDots; i++) {
+        let name = (isCurrent === i) ? "isCurrent dot" : "dot";
+        dotsCount.push(<Dot key={i} name={name} dotClick={dotClick} dotIndex={i}/>)
+    }
 
-  return (
-    <div className="dotsContainer">
-      {dotsCount}
-    </div>
-  )
+    return (
+        <div className="dotsContainer">
+            {dotsCount}
+        </div>
+    )
 }
 
 export default Dots

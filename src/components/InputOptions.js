@@ -1,89 +1,137 @@
 import React, {Component} from 'react';
+import {getTextArray} from "../helpers";
+
 class InputOptions extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = ({
-            status: "_______",
-            investments: 0,
-            goals: 0,
-            years: 0,
-            expenses: 0,
-            savings: 0,
-        });
-    }
+    isEmpty = (value) => {
+        if (value === "____" || value.length <= 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    };
 
     goToDreamCalc = () => {
         const options = {
-            option1: "",
-            option2: "",
-            option3: "",
-            option4: ""
+
+            option1: ("" + this.state.investments).trim(),
+            option2: ("" + this.state.status).trim(),
+            option3: ("" + this.state.goals).trim(),
+            option4: ("" + this.state.years).trim(),
         };
-        this.props.storeOptions(options);
-        this.context.router.transitionTo(`/dream`);
+
+        console.log("OPTIONS: " + options.option1 + " " + options.option2 + " " + options.option3 + " " + options.option4);
+
+        if (this.props.buttonSelection === getTextArray()[0]) {
+            if (parseFloat(options.option1) <= 0) {
+                alert("Savings and investments have to be greater than 0")
+            }
+            else if (parseInt(options.option4) <= 0 || parseInt(options.option4) > 70) {
+                alert("Years must be greater than or equal to one and less than or equal to 70")
+            }
+            else if (parseFloat(options.option3) < parseFloat(options.option1)) {
+                alert("Goal Must Be Greater then current savings and investments")
+            }
+            else if (!this.isEmpty(options.option1) || !this.isEmpty(options.option2) || !this.isEmpty(options.option3) || !this.isEmpty(options.option4)) {
+                alert("Please fill in all fields with proper values");
+            }
+            else {
+                //PASS THE OPTIONS AND CALC DREAM
+                this.props.storeOptions(options);
+                this.context.router.transitionTo(`/dream`);
+            }
+        }
+        else if (this.props.buttonSelection === getTextArray()[1]) {
+            if (parseFloat(options.option1) <= 0) {
+                alert("Savings and investments have to be greater than 0")
+            }
+            else if (parseFloat(options.option4) <= 0) {
+                alert("Monthly investments must be greater than 0 and less than or equal to 70")
+            }
+            else if (parseFloat(options.option3) < parseFloat(options.option1)) {
+                alert("Goal must Be greater than current savings and investments")
+            }
+            else if (!this.isEmpty(options.option1) || !this.isEmpty(options.option2) || !this.isEmpty(options.option3) || !this.isEmpty(options.option4)) {
+                alert("Please fill in all fields with proper values");
+            }
+            else {
+                //PASS THE OPTIONS AND CALC DREAM
+                this.props.storeOptions(options);
+                this.context.router.transitionTo(`/dream`);
+            }
+        }
+        else if (this.props.buttonSelection === getTextArray()[2]) {
+
+            if (parseFloat(options.option1) <= 0) {
+                alert("Savings and investments have to be greater than 0")
+            }
+            else if (parseInt(options.option4) <= 0  || parseInt(options.option4) > 70) {
+                alert("Years must be Greater than or equal to one")
+            }
+            else if (parseFloat(options.option3) < 0) {
+                alert("Monthly investments must be at least 0")
+            }
+            else if (!this.isEmpty(options.option1) || !this.isEmpty(options.option2) || !this.isEmpty(options.option3) || !this.isEmpty(options.option4)) {
+                alert("Please fill in all fields with proper values");
+            }
+            else {
+                //PASS THE OPTIONS AND CALC DREAM
+                this.props.storeOptions(options);
+                this.context.router.transitionTo(`/dream`);
+            }
+        }
+
+
+    };
+    changeStatus = (event) => {
+        this.setState({status: event})
     };
 
     // changeEvent = (event) => {
     //     this.setState({[event.target.name]: event.target.value});
     // };
-
-    changeStatus = (event) => {
-        this.setState({status: event})
-    };
-
     changeInvestments = (event) => {
         this.setState({investments: event})
     };
-
     changeGoals = (event) => {
         this.setState({goals: event})
     };
-
     changeYears = (event) => {
         this.setState({years: event})
     };
 
-    changeSavings = (event) => {
-        this.setState({savings: event})
-    };
-
-    changeExpenses = (event) => {
-        this.setState({expenses: event})
-    };
+    constructor(props) {
+        super(props);
+        var gap = "____";
+        this.state = ({
+            status: gap,
+            investments: gap,
+            goals: gap,
+            years: gap
+        });
+    }
 
     render() {
-        // const option = this.props.landingPageOption;
-        // var exp = null;
-        // var yearsWorked = null;
-        // var moneySaved = null;
-        // var goal = null;
-        // if (option === getTextArray()[0]) {
-        //     exp = <h2 className="heading-7-copy">My monthly expenses are ${this.state.expenses}</h2>;
-        //     <input className="input" type="text" placeholder="Amount in USD$"
-        //            onChange={(event) => this.changeExpenses(event.target.value)}/>
-        //     yearsWorked = <h2 className="heading-7-copy">I plan to work for another {this.state.years} years</h2>;
-        //     <input className="input" type="text" placeholder="Number of years"
-        //            onChange={(event) => this.changeYears(event.target.value)}/>
-        // }
-        // else if (option === getTextArray()[1]) {
-        //     goal = <h2 className="heading-7-copy">I want to reach my goal of ${this.state.plans}</h2>;
-        //     <input className="input" type="text" placeholder="Amount in USD$"
-        //            onChange={(event) => this.changeGoals(event.target.value)}/>
-        //
-        //     moneySaved =
-        //         <h2 className="heading-7-copy">I want to save and invest a monthly amount of ${this.state.savings}</h2>;
-        //     <input className="input" type="text" placeholder="Amount in USD$"
-        //            onChange={(event) => this.changeSavings(event.target.value)}/>
-        // }
-        // else if (option === getTextArray()[2]) {
-        //     exp = <h2 className="heading-7-copy">My monthly expenses are ${this.state.expenses}</h2>;
-        //     <input className="input" type="text" placeholder="Amount in USD$"
-        //            onChange={(event) => this.changeExpenses(event.target.value)}/>
-        //     yearsWorked = <h2 className="heading-7-copy">I plan to work for another {this.state.years} years</h2>;
-        //     <input className="input" type="text" placeholder="Number of years"
-        //            onChange={(event) => this.changeYears(event.target.value)}/>
-        // }
+
+        var option1 = option1 =
+            <h2 className="heading-7-copy">My current savings and investments are ${this.state.investments}</h2>;
+        var option2 = <h2 className="heading-7-copy">I consider myself {this.state.status} with my investments</h2>;
+        var option3 = null;
+        var option4 = null;
+
+        if (this.props.buttonSelection === getTextArray()[0]) {
+            option3 = <h2 className="heading-7-copy">I want to reach my goal of ${this.state.goals}</h2>;
+            option4 = <h2 className="heading-7-copy">I plan to work for {this.state.years} years</h2>;
+        }
+        else if (this.props.buttonSelection === getTextArray()[1]) {
+            option3 = <h2 className="heading-7-copy">I want to reach my goal of ${this.state.goals}</h2>;
+            option4 = <h2 className="heading-7-copy">I plan to save and invest ${this.state.years} per month</h2>;
+        }
+        else if (this.props.buttonSelection === getTextArray()[2]) {
+            option3 = <h2 className="heading-7-copy">My monthly expenses are ${this.state.goals}</h2>;
+            option4 = <h2 className="heading-7-copy">I plan to work for {this.state.years} years</h2>;
+        }
 
 
         return (
@@ -92,7 +140,7 @@ class InputOptions extends Component {
                     <h1 className="question-title">Dream Calculator</h1>
                     <h2 className="question-subtitle">How much do I need to put aside to reach my goal?</h2>
 
-                    <h2 className="heading-7-copy">My current savings and investments are ${this.state.investments}</h2>
+                    {option1}
                     <div className="not-clickable option">
                         <input className="input" type="text" placeholder="Amount in USD$"
                                onChange={(event) => this.changeInvestments(event.target.value)}/>
@@ -100,7 +148,7 @@ class InputOptions extends Component {
 
                     {/*{this.status.value !== null && <h2 className="heading-7-copy">I consider myself {this.status.value} with my investments</h2>}*/}
                     {/*{this.status.value === null && <h2 className="heading-7-copy">I consider myself ___ with my investments</h2>}*/}
-                    <h2 className="heading-7-copy">I consider myself {this.state.status} with my investments</h2>
+                    {option2}
                     <div className="not-clickable option">
                         <select className="dropdown" onChange={(event) => this.changeStatus(event.target.value)}>
                             <option value="Conservative">Conservative</option>
@@ -108,12 +156,13 @@ class InputOptions extends Component {
                             <option value="Aggressive">Aggressive</option>
                         </select>
                     </div>
-                    <h2 className="heading-7-copy">I want to reach my goal of</h2>
+                    {option3}
                     <div className="not-clickable option">
-                        <input className="input" type="text" placeholder="Amount in USD$"/>
+                        <input className="input" type="text" placeholder="Amount in USD$"
+                               onChange={(event) => this.changeGoals(event.target.value)}/>
                     </div>
 
-                    <h2 className="heading-7-copy">I plan to work for {this.state.years} years</h2>
+                    {option4}
                     <div className="not-clickable option">
                         <input className="input" type="text" placeholder="Number of Years"
                                onChange={(event) => this.changeYears(event.target.value)}/>
