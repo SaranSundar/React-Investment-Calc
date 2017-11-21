@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Line} from "react-chartjs-2";
-import {checkOrientation, getTextArray, option1FinalFormula, option2Formula, option3FinalFormula} from "../helpers";
+import {checkOrientation, getTextArray, option1FinalFormula, option2Formula, option3Final} from "../helpers";
 
 
 class ChartPage extends Component {
@@ -22,9 +22,11 @@ class ChartPage extends Component {
     };
 
     componentWillMount() {
+        let yVals2;
+        let i;
         setTimeout(function () {
             this.loadPage();
-        }.bind(this), 6000);
+        }.bind(this), 3200);
 
         var yVals = null;
         var xVals = null;
@@ -35,29 +37,67 @@ class ChartPage extends Component {
             console.log("IS THIS BUTTON 1");
             //this.props.options
             var initInvestments = parseFloat(this.props.options.option1);
-            var option = this.props.options.option2;
+            var option = this.props.options.option2.toLocaleLowerCase();
             var goal = parseFloat(this.props.options.option3);
             var years = parseInt(this.props.options.option4);
             console.log(initInvestments + " " + option + " " + goal + " " + years);
             yVals = option1FinalFormula(initInvestments, option, goal, years);
+            if (yVals.length > 25) {
+                yVals2 = [];
+                for (i = 0; i < yVals.length; i++) {
+                    if (i % 12 === 0)
+                        yVals2.push(yVals[i]);
+                }
+                yVals = yVals2;
+            }
             xVals = [];
-            for (var i = 0; i < yVals.length; i++) {
+            for (i = 0; i < yVals.length; i++) {
+                //yVals[i] = "$"+yVals[i];
                 xVals.push(i);
             }
+            //xVals.push(xVals[xVals.length-1]+1)
         }
         else if (this.props.buttonSelection === getTextArray()[1]) {
-            yVals = option2Formula(parseFloat(this.props.options.option1), this.props.options.option2, parseFloat(this.props.options.option3), parseFloat(this.props.options.option4));
+            yVals = option2Formula(parseFloat(this.props.options.option1), this.props.options.option2.toLocaleLowerCase(), parseFloat(this.props.options.option3), parseFloat(this.props.options.option4));
             xVals = [];
-            for (var i = 0; i < yVals.length; i++) {
+            const lastYear = (yVals.length + 1) / 12;
+            //Math.max(months, (months%12+1)*12);
+            if (yVals.length > 25) {
+                yVals2 = [];
+                for (i = 0; i < yVals.length; i++) {
+                    if (i % 12 === 0)
+                        yVals2.push(yVals[i]);
+                }
+                yVals2.push(yVals[yVals.length - 1]);
+                yVals = yVals2;
+            }
+            for (i = 0; i < yVals.length - 1; i++) {
+                //yVals[i] = "$"+yVals[i];
                 xVals.push(i);
             }
+            xVals.push(lastYear.toFixed(2));
+            //xVals.push(xVals[xVals.length-1]+1)
         }
         else if (this.props.buttonSelection === getTextArray()[2]) {
-            yVals = option3FinalFormula(parseFloat(this.props.options.option1), this.props.options.option2, parseFloat(this.props.options.option3), parseInt(this.props.options.option4));
+            console.log(this.props.options.option1 + " " + this.props.options.option2 + " " + this.props.options.option3 + " " + this.props.options.option4);
+            yVals = option3Final(parseFloat(this.props.options.option1), this.props.options.option2.toLocaleLowerCase(), parseInt(this.props.options.option4), parseFloat(this.props.options.option3));
+            ///yVals = option3Final(10000.0, "aggressive", 20, 3500.0);
             xVals = [];
-            for (var i = 0; i < yVals.length; i++) {
+            if (yVals.length > 25) {
+                yVals2 = [];
+                for (i = 0; i < yVals.length; i++) {
+                    if (i % 12 === 0)
+                        yVals2.push(yVals[i]);
+                }
+                yVals = yVals2;
+            }
+            for (let i = 0; i < yVals.length; i++) {
+                //yVals[i] = "$"+yVals[i];
                 xVals.push(i);
             }
+            //console.log(yVals);
+            //console.log(xVals.length);
+            //xVals.push(xVals[xVals.length-1]+1)
         }
         this.setState({yVals: yVals, xVals: xVals});
     }
@@ -91,36 +131,47 @@ class ChartPage extends Component {
                         cubicInterpolationMode: 'monotone',
                         fill: true,
                         backgroundColor: "rgba(207, 207, 209, 0.3)"
-                    },
-                        {
-                            label: 'Ideal Money Levels $',
-                            data: [20, 20, 20, 20, 20],
-                            borderColor: "rgb(207, 207, 209)",
-                            borderWidth: 5,
-                            cubicInterpolationMode: 'monotone'
-                        }]
+                    }]//,
+                    //     {
+                    //         label: 'Ideal Money Levels $',
+                    //         data: [20, 20, 20, 20, 20],
+                    //         borderColor: "rgb(207, 207, 209)",
+                    //         borderWidth: 5,
+                    //         cubicInterpolationMode: 'monotone'
+                    //     }]
                 };
             };
             const options = {
                 scales: {
                     xAxes: [{
                         display: true,
+                        ticks: {
+                            fontSize: 20
+                        },
                         scaleLabel: {
                             display: true,
                             gridLines: {
                                 color: "rgb(207, 207, 209)"
                             },
-                            labelString: "Time in Months"
+                            labelString: "Time in Months",
+                            fontSize: 20
                         }
                     }],
                     yAxes: [{
                         display: true,
+                        ticks: {
+                            fontSize: 20,
+                            callback: function(label, index, labels) {
+                                return "$"+label;
+                            }
+                        },
                         gridLines: {
                             color: "rgb(207, 207, 209)"
                         },
                         scaleLabel: {
                             display: true,
-                            labelString: 'USD$'
+                            labelString: 'USD$',
+                            fontSize: 20
                         }
                     }]
                 }
@@ -133,9 +184,9 @@ class ChartPage extends Component {
                 <div id="wrapChart">
                     <Line data={data} options={options} width={width} height={height}/>
                     <div className="settings">
-                        <img height="48"
-                             src="https://cdn0.iconfinder.com/data/icons/set-app-incredibles/24/Configuration-01-128.png"
-                             alt="Settings"/>
+                        {/*<img height="48"*/}
+                             {/*src="https://cdn0.iconfinder.com/data/icons/set-app-incredibles/24/Configuration-01-128.png"*/}
+                             {/*alt="Settings"/>*/}
                     </div>
                 </div>
             );

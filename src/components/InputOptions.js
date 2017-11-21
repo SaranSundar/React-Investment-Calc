@@ -47,7 +47,7 @@ class InputOptions extends Component {
                 alert("Savings and investments have to be greater than 0")
             }
             else if (parseFloat(options.option4) <= 0) {
-                alert("Monthly investments must be greater than 0 and less than or equal to 70")
+                alert("Monthly investments must be greater than 0 and less than 70")
             }
             else if (parseFloat(options.option3) < parseFloat(options.option1)) {
                 alert("Goal must Be greater than current savings and investments")
@@ -67,7 +67,7 @@ class InputOptions extends Component {
                 alert("Savings and investments have to be greater than 0")
             }
             else if (parseInt(options.option4) <= 0  || parseInt(options.option4) > 70) {
-                alert("Years must be Greater than or equal to one")
+                alert("Monthly investments must be greater than 0 and less than 70")
             }
             else if (parseFloat(options.option3) < 0) {
                 alert("Monthly investments must be at least 0")
