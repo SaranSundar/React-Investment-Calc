@@ -33,7 +33,7 @@ export function option1Formula(initInvestments, goal, monthInvestment, years, op
 
     for (let i = 1; i <= (years * 12); i++) {
         balance.push(balance[i - 1] + growth[i - 1] + addition[i - 1]);
-        growth.push(balance[i - 1] * multiplier);
+        growth.push(balance[i] * multiplier);
         addition.push(addition[i - 1] * 1.0025);
     }
 
@@ -42,14 +42,18 @@ export function option1Formula(initInvestments, goal, monthInvestment, years, op
 
 export function option1FinalFormula(initInvestments, option, goal, years) {
     var result = [];
-    var monthInvestment = 0;
+    var monthInvestment = 0.0;
     do {
         result = option1Formula(initInvestments, goal, monthInvestment, years, option);
         monthInvestment = monthInvestment + 0.1;
     }
     while (result[result.length - 1] < goal);
 
-    return result;
+    const finalAns = {
+        yVals: result,
+        monthInv : monthInvestment-0.1
+    };
+    return finalAns;
 }
 
 export function option2Formula(initInvestments, option, goal, monthInvestment) {
@@ -84,14 +88,23 @@ export function option2Formula(initInvestments, option, goal, monthInvestment) {
 export function option3Final(initInv, option,  yrs,  expense) {
     let monthInv = 0.0;
     let result;
+    var checkMonthInvZero = false;
     do {
         result = option3Formula(initInv, yrs, monthInv, option, expense);
-        monthInv += 1;
-    }
-    while (result.length <= 600);
+        if (!checkMonthInvZero && result.length > 601)
+            return option3AltFormula(initInv, option, expense, yrs);
+        checkMonthInvZero = true;
+        monthInv += .1;
 
-    console.log(monthInv);
-    return result;
+    }
+    while (result.length !== 601);
+
+
+    const finalAns = {
+        yVals: result,
+        monthInv : monthInv-0.1
+    };
+    return finalAns;
 }
 
 function option3Formula(initInv,yrs, monthInv, option, expense) {
@@ -121,12 +134,48 @@ function option3Formula(initInv,yrs, monthInv, option, expense) {
             balance.push(balance[(counter - 1)] + growth[(counter - 1)] - expenses[(counter - 1)]);
 
         growth.push(balance[counter] * multiplier);
-        addition.push(addition[counter - 1] * 1.0025);
+        addition.push(addition[(counter - 1)] * 1.0025);
         expenses.push(expenses[(counter - 1)] * 1.0025);
         counter++;
     }
     balance[balance.length - 1] =  0.0;
     return balance;
+}
+
+
+export function option3AltFormula(initInvestments, option, expense, years){
+    var balance = [];
+    balance.push(initInvestments);
+
+    var multiplier = 0;
+    if (option === "aggressive")
+        multiplier = .09 / 12;
+    else if (option === "moderate")
+        multiplier = .07 / 12;
+    else
+        multiplier = .04 / 12;
+
+    var growth = [];
+    growth.push(initInvestments * multiplier);
+    var expenses = [];
+    expenses.push(expense);
+
+    var counter = 1;
+    while (counter <= 600) {
+        if (counter <= years * 12)
+            balance.push(balance[counter - 1] + growth[counter - 1]);
+        else
+            balance.push(balance[counter - 1] + growth[counter - 1] - expenses[counter - 1]);
+
+        growth.push(balance[counter] * multiplier);
+        expenses.push(expenses[counter - 1] * 1.0025);
+        counter++;
+    }
+    const finalAns = {
+        yVals: balance,
+        monthInv : 0
+    };
+    return finalAns;
 }
 
 

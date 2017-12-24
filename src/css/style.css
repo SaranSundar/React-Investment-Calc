@@ -2141,7 +2141,23 @@ p {
 }
 
 .slider {
-    height: 100%;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.slide{
+    position: absolute;
+    margin: auto;
+    top: 10vh;                              /* THIS PROPERTY CHANGES THE VERTICAL MARGIN OF THE GRAPH */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 75vw !important;
+    height: 75vh !important;
 }
 
 .right-arrow {
@@ -3763,7 +3779,7 @@ html.w-mod-js *[data-ix="page-load-fade-in"] {
     stroke-dasharray: 198;
     stroke-dashoffset: 198;
     animation: spin 3.5s infinite linear;
-    stroke: #585870;
+    stroke: #ededfc;
 }
 
 @keyframes spin {
@@ -3792,17 +3808,63 @@ svg {
 
 #wrapChart {
     position: absolute;
-    top: 0vh;
+    margin: auto;
+    top: 10vh;                      /* THIS PROPERTY CHANGES THE MARGIN ABOVE THE GRAPH */
     left: 0;
-}
-
-#wrapChart canvas {
-    width: 100vw;
-    height: 100vh;
+    right: 0;
+    bottom: 0;
+    width:75vw;
+    height: 75vh;
 }
 
 .settings {
     position: absolute;
     top: 48px;
     right: 48px;
+}
+
+.slider{
+    background-color: #252326 !important;
+}
+
+.options{
+    margin-top: 90vh;
+    padding-bottom: 5vh;
+    margin-bottom: 5vh;
+    text-align: center;
+    background-color: #252326;
+}
+
+.options li {
+    list-style: none;
+    font-size: 20px;
+    color: #ffffff;
+    margin: 0;
+}
+
+.options li + li {
+    margin-top: 1em;
+}
+
+.chartTitle{
+    margin-top: 1.5vh;
+    padding-top: 1.5vh;
+    z-index: 99999999999999;
+}
+
+#optionswrapper{
+    text-align: center;
+    background-color: #252326;
+    padding-bottom: 7vw;
+}
+
+.one{
+    float: left;
+    margin-left: 20vw;
+}
+
+.two{
+    float: right;
+    margin-right: 20vw;
+    padding-bottom: 2vh;
 }

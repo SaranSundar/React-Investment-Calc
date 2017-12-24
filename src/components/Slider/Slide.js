@@ -10,7 +10,7 @@ const Slide = (props) => {
             backgroundPosition: 'center center'
         }
     }
-    return <div className="slide" style={styles.imageBackground}></div>
+    return <div className="slide" style={styles.imageBackground} ></div>
 }
 
 export default Slide;

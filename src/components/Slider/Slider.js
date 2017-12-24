@@ -61,6 +61,7 @@ export default class Slider extends Component {
 
     render() {
 
+
         return (
             <div className="slider">
                 {/* The Current Image*/}
@@ -94,7 +95,8 @@ export default class Slider extends Component {
                 }
 
                 {this.preloadNextImage()}
-                <ChartPage loadImage={this.setImageReady} options={this.props.options} buttonSelection={this.props.buttonSelection}/>
+
+            <ChartPage loadImage={this.setImageReady} options={this.props.options} buttonSelection={this.props.buttonSelection}/>
             </div>
         );
     }

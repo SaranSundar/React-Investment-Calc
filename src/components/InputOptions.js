@@ -12,6 +12,24 @@ class InputOptions extends Component {
         }
     };
 
+    // componentCleanup = () => { // this will hold the cleanup code
+    //     // whatever you want to do when the component is unmounted or page refreshes
+    //     console.log("BUTTON" + this.props.buttonSelection);
+    //     if(this.props.buttonSelection !== getTextArray()[0] || this.props.buttonSelection !== getTextArray()[1] || this.props.buttonSelection !== getTextArray()[2]){
+    //         this.context.router.transitionTo(`/`);
+    //     }
+    // };
+    //
+    // componentDidMount() {
+    //     window.addEventListener('beforeunload', this.componentCleanup);
+    //
+    // }
+    //
+    // componentWillUnmount() {
+    //     this.componentCleanup();
+    //     window.removeEventListener('beforeunload', this.componentCleanup); // remove the event handler for normal unmounting
+    // }
+
     goToDreamCalc = () => {
         const options = {
 
@@ -27,8 +45,8 @@ class InputOptions extends Component {
             if (parseFloat(options.option1) <= 0) {
                 alert("Savings and investments have to be greater than 0")
             }
-            else if (parseInt(options.option4) <= 0 || parseInt(options.option4) > 70) {
-                alert("Years must be greater than or equal to one and less than or equal to 70")
+            else if (parseInt(options.option4) <= 0 || parseInt(options.option4) > 50) {
+                alert("Number of years must be between 1 and 50")
             }
             else if (parseFloat(options.option3) < parseFloat(options.option1)) {
                 alert("Goal Must Be Greater then current savings and investments")
@@ -47,7 +65,7 @@ class InputOptions extends Component {
                 alert("Savings and investments have to be greater than 0")
             }
             else if (parseFloat(options.option4) <= 0) {
-                alert("Monthly investments must be greater than 0 and less than 70")
+                alert("Monthly investments must be at least 0")
             }
             else if (parseFloat(options.option3) < parseFloat(options.option1)) {
                 alert("Goal must Be greater than current savings and investments")
@@ -66,11 +84,11 @@ class InputOptions extends Component {
             if (parseFloat(options.option1) <= 0) {
                 alert("Savings and investments have to be greater than 0")
             }
-            else if (parseInt(options.option4) <= 0  || parseInt(options.option4) > 70) {
-                alert("Monthly investments must be greater than 0 and less than 70")
+            else if (parseInt(options.option4) <= 0 || parseInt(options.option4) > 50) {
+                alert("Number of years must be between 1 and 50")
             }
             else if (parseFloat(options.option3) < 0) {
-                alert("Monthly investments must be at least 0")
+                alert("Monthly expenses must be at least 0")
             }
             else if (!this.isEmpty(options.option1) || !this.isEmpty(options.option2) || !this.isEmpty(options.option3) || !this.isEmpty(options.option4)) {
                 alert("Please fill in all fields with proper values");
@@ -105,12 +123,19 @@ class InputOptions extends Component {
         super(props);
         var gap = "____";
         this.state = ({
-            status: gap,
+            status: "Conservative",
             investments: gap,
             goals: gap,
             years: gap
         });
     }
+
+    componentWillMount() {
+        if(this.props.buttonSelection.length < 3){
+            this.context.router.transitionTo(`/`);
+        }
+    }
+
 
     render() {
 
@@ -151,7 +176,7 @@ class InputOptions extends Component {
                     {option2}
                     <div className="not-clickable option">
                         <select className="dropdown" onChange={(event) => this.changeStatus(event.target.value)}>
-                            <option value="Conservative">Conservative</option>
+                            <option value="Conservative" selected="selected">Conservative</option>
                             <option value="Moderate">Moderate</option>
                             <option value="Aggressive">Aggressive</option>
                         </select>

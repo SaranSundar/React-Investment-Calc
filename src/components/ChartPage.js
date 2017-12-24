@@ -11,7 +11,10 @@ class ChartPage extends Component {
         this.state = {
             loading: true,
             yVals: null,
-            xVals: null
+            xVals: null,
+            cupsOfCoffee: null,
+            ans: null,
+            xAxis: null
         };
     }
 
@@ -20,6 +23,7 @@ class ChartPage extends Component {
         this.props.loadImage();
         checkOrientation();
     };
+
 
     componentWillMount() {
         let yVals2;
@@ -30,8 +34,12 @@ class ChartPage extends Component {
 
         var yVals = null;
         var xVals = null;
+        var cupsOfCoffee = null;
+        var ans = null;
+        var xAxis = null;
         //parseInt()
         //parseFloat()
+
 
         if (this.props.buttonSelection === getTextArray()[0]) {
             console.log("IS THIS BUTTON 1");
@@ -41,14 +49,21 @@ class ChartPage extends Component {
             var goal = parseFloat(this.props.options.option3);
             var years = parseInt(this.props.options.option4);
             console.log(initInvestments + " " + option + " " + goal + " " + years);
-            yVals = option1FinalFormula(initInvestments, option, goal, years);
+            const finalAns = option1FinalFormula(initInvestments, option, goal, years);
+            yVals = finalAns.yVals;
+            ans = finalAns.monthInv;
+            cupsOfCoffee = finalAns.monthInv / 5;
             if (yVals.length > 25) {
+                xAxis = "Time in Years";
                 yVals2 = [];
                 for (i = 0; i < yVals.length; i++) {
                     if (i % 12 === 0)
                         yVals2.push(yVals[i]);
                 }
                 yVals = yVals2;
+            }
+            else {
+                xAxis = "Time in Months";
             }
             xVals = [];
             for (i = 0; i < yVals.length; i++) {
@@ -63,6 +78,7 @@ class ChartPage extends Component {
             const lastYear = (yVals.length + 1) / 12;
             //Math.max(months, (months%12+1)*12);
             if (yVals.length > 25) {
+                xAxis = "Time in Years";
                 yVals2 = [];
                 for (i = 0; i < yVals.length; i++) {
                     if (i % 12 === 0)
@@ -71,25 +87,36 @@ class ChartPage extends Component {
                 yVals2.push(yVals[yVals.length - 1]);
                 yVals = yVals2;
             }
-            for (i = 0; i < yVals.length - 1; i++) {
+            else {
+                xAxis = "Time in Months";
+            }
+            for (i = 0; i < yVals.length; i++) {
                 //yVals[i] = "$"+yVals[i];
                 xVals.push(i);
             }
-            xVals.push(lastYear.toFixed(2));
+            //xVals.push(lastYear.toFixed(0));
+            ans = xVals[xVals.length - 1];//lastYear.toFixed(0);
             //xVals.push(xVals[xVals.length-1]+1)
         }
         else if (this.props.buttonSelection === getTextArray()[2]) {
             console.log(this.props.options.option1 + " " + this.props.options.option2 + " " + this.props.options.option3 + " " + this.props.options.option4);
-            yVals = option3Final(parseFloat(this.props.options.option1), this.props.options.option2.toLocaleLowerCase(), parseInt(this.props.options.option4), parseFloat(this.props.options.option3));
+            const finalAns = option3Final(parseFloat(this.props.options.option1), this.props.options.option2.toLocaleLowerCase(), parseInt(this.props.options.option4), parseFloat(this.props.options.option3));
+            yVals = finalAns.yVals;
+            ans = finalAns.monthInv;
+            cupsOfCoffee = finalAns.monthInv / 5;
             ///yVals = option3Final(10000.0, "aggressive", 20, 3500.0);
             xVals = [];
             if (yVals.length > 25) {
+                xAxis = "Time in Years";
                 yVals2 = [];
                 for (i = 0; i < yVals.length; i++) {
                     if (i % 12 === 0)
                         yVals2.push(yVals[i]);
                 }
                 yVals = yVals2;
+            }
+            else {
+                xAxis = "Time in Months";
             }
             for (let i = 0; i < yVals.length; i++) {
                 //yVals[i] = "$"+yVals[i];
@@ -99,14 +126,19 @@ class ChartPage extends Component {
             //console.log(xVals.length);
             //xVals.push(xVals[xVals.length-1]+1)
         }
-        this.setState({yVals: yVals, xVals: xVals});
+        else {
+            this.context.router.transitionTo(`/`);
+            return;
+        }
+
+        this.setState({yVals: yVals, xVals: xVals, cupsOfCoffee: cupsOfCoffee, ans: ans, xAxis: xAxis});
     }
 
     render() {
         if (this.state.loading) {
             return (
                 <div id="animation">
-                    <h1 style={{color: "#001f3f"}}>Calculating...Hard At Work...</h1>
+                    <h1 style={{color: "#0b7aed"}}>Calculating...Hard At Work...</h1>
                     <svg viewBox="0 0 124 124">
                         <polygon className="hex" fill="none" stroke="#000000"
                                  points="92,48.4575131106 92,15.542486889354095 62,2 32,15.542486889354095 32,48.4575131106"/>
@@ -153,7 +185,7 @@ class ChartPage extends Component {
                             gridLines: {
                                 color: "rgb(207, 207, 209)"
                             },
-                            labelString: "Time in Months",
+                            labelString: "Time in Years",
                             fontSize: 20
                         }
                     }],
@@ -161,8 +193,8 @@ class ChartPage extends Component {
                         display: true,
                         ticks: {
                             fontSize: 20,
-                            callback: function(label, index, labels) {
-                                return "$"+label;
+                            callback: function (label) {
+                                return "$" + label.toLocaleString();
                             }
                         },
                         gridLines: {
@@ -177,16 +209,42 @@ class ChartPage extends Component {
                 }
             };
 
-            var height = window.innerHeight;
-            var width = window.innerWidth;
+            var height = window.innerHeight * .6;
+            var width = window.innerWidth * .6;
 
             return (
-                <div id="wrapChart">
-                    <Line data={data} options={options} width={width} height={height}/>
-                    <div className="settings">
-                        {/*<img height="48"*/}
-                             {/*src="https://cdn0.iconfinder.com/data/icons/set-app-incredibles/24/Configuration-01-128.png"*/}
-                             {/*alt="Settings"/>*/}
+                <div id="optionswrapper">
+                    <h1 className="chartTitle">{this.props.buttonSelection}</h1>
+                    <div id="wrapChart">
+                        <Line data={data} options={options}/>
+                        <div className="settings">
+                            {/*<img height="48"*/}
+                            {/*src="https://cdn0.iconfinder.com/data/icons/set-app-incredibles/24/Configuration-01-128.png"*/}
+                            {/*alt="Settings"/>*/}
+                        </div>
+                    </div>
+                    <div className="options">
+                        <div className="one">
+                            <ul>
+                                <li>Current Savings: ${parseFloat(this.props.options.option1).toLocaleString()}</li>
+                                <li>Investment Style: {this.props.options.option2}</li>
+                                <li>{this.props.buttonSelection === getTextArray()[2] ? ("Monthly Expenses: $" + parseFloat(this.props.options.option3).toLocaleString()) : ("Goal: $" + parseFloat(this.props.options.option3).toLocaleString())}</li>
+                            </ul>
+                        </div>
+
+                        <div className="two">
+                            <ul>
+                                <li>{this.props.buttonSelection === getTextArray()[1] ? ("Invest Per Month: $" + parseFloat(this.props.options.option4).toLocaleString()) : ("Plan to work for (years): " + this.props.options.option4.toLocaleString())}</li>
+                                {this.state.cupsOfCoffee !== null &&
+                                <li>Cups Of Coffee Per Month: {Math.round(this.state.cupsOfCoffee)}</li>}
+                                {this.props.buttonSelection === getTextArray()[0] && <li>Initial Monthly Investment:
+                                    ${parseFloat(this.state.ans).toFixed(0).toLocaleString()}</li>}
+                                {this.props.buttonSelection === getTextArray()[1] && <li>{this.state.xAxis} to Reach
+                                    Goal: {this.state.ans.toFixed(0).toLocaleString()}</li>}
+                                {this.props.buttonSelection === getTextArray()[2] && <li>Initial Monthly Investment:
+                                    ${parseFloat(this.state.ans).toFixed(0).toLocaleString()}</li>}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             );
@@ -194,6 +252,10 @@ class ChartPage extends Component {
 
     }
 }
+
+ChartPage.contextTypes = {
+    router: React.PropTypes.object
+};
 
 export default ChartPage;
 
